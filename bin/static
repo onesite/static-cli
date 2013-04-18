@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+ENV['VMC_CONFIG_DIR'] = "~/.static"
+
+VENDOR_DIR = File.expand_path(File.join(File.dirname(__FILE__), "..", "vendor"))
+if File.directory?(VENDOR_DIR)
+  local_vendor = Dir.glob(File.join(VENDOR_DIR, "**"))
+  local_vendor.each do |vendor|
+    $LOAD_PATH.unshift File.join(vendor, "bin") unless $LOAD_PATH.include?(File.join(vendor, "bin"))
+    $LOAD_PATH.unshift File.join(vendor, "lib") unless $LOAD_PATH.include?(File.join(vendor, "lib"))
+  end
+end
+
+require "rubygems"
+require "static"
+require "vmc/plugin"
+
+VMC::Plugin.load_all
+Static::CLI.start(ARGV)
